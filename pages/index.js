@@ -1,7 +1,7 @@
-import { Typography } from '@mui/material'
-import Head from 'next/head'
-import { useEffect, useState } from 'react';
-import Layout from '../components/Layout'
+import { Alert, CircularProgress, Grid } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import Layout from '../components/Layout';
+import ProductItem from '../components/ProductItem';
 import client from '../utils/client';
 
 export default function Home() {
@@ -10,6 +10,7 @@ export default function Home() {
     error: '',
     loading: true,
   });
+  const { loading, error, products } = state;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +26,22 @@ export default function Home() {
 
   return (
     <Layout>
-      List Products
+      {loading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Alert variant="danger">{error}</Alert>
+      ) : (
+        <Grid container spacing={3}>
+          {products.map((product) => (
+            <Grid item md={4} key={product.slug}>
+              <ProductItem
+                product={product}
+                addToCartHandler={addToCartHandler}
+              ></ProductItem>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Layout>
   )
 }
